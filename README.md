@@ -139,7 +139,7 @@ software or services.
 
 ## Generative AI Disclosure
 
-Generative AI tools were used during development for assistance with code
+Generative AI tools such as Google Gemini were used during development for assistance with code
 generation, debugging, documentation, problem solving, and UI/content
 refinement. All generated or suggested content was reviewed, integrated,
 tested, and adapted by the project team.
