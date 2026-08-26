@@ -1,0 +1,383 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   String                   @id @default(uuid())
+  email                String                   @unique
+  passwordHash         String?
+  name                 String
+  phone                String?
+  role                 Role                     @default(USER)
+  status               AccountStatus            @default(ACTIVE)
+  banReason            String?
+  locationAddress      String?
+  locationCity         String?
+  latitude             Float?
+  longitude            Float?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  activityLogs         ActivityLog[]
+  stockTransactions    BloodStockTransaction[]
+  filedComplaints      Complaint[]              @relation("ReportedByUser")
+  donationRecords      DonationRecord[]         @relation("DonorUser")
+  donorProfile         DonorProfile?
+  createdAlerts        EmergencyAlert[]         @relation("AlertCreator")
+  donorResponses       EmergencyDonorResponse[]
+  managedOrganizations Organization[]           @relation("OrgManager")
+  notifications        Notification[]           @relation("UserNotifications")
+
+  @@map("users")
+}
+
+model DonorProfile {
+  id                    String     @id @default(uuid())
+  userId                String     @unique
+  bloodGroup            BloodGroup
+  totalDonations        Int        @default(0)
+  livesImpacted         Int        @default(0)
+  lastDonationDate      DateTime?
+  isAvailableToDonate   Boolean    @default(true)
+  weightKg              Float?
+  hemoglobin            Float?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  digitalIdHash         String?
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+  user                  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("donor_profiles")
+}
+
+model Organization {
+  id                       String                  @id @default(uuid())
+  userId                   String?
+  name                     String
+  type                     OrganizationType        @default(HOSPITAL)
+  registrationNumber       String                  @unique
+  email                    String
+  phone                    String
+  address                  String
+  city                     String
+  state                    String?
+  pincode                  String?
+  contactPerson            String
+  contactPersonDesignation String?
+  status                   OrganizationStatus      @default(PENDING)
+  rejectionReason          String?
+  banReason                String?
+  facilityType             String?
+  latitude                 Float?
+  longitude                Float?
+  verifiedAt               DateTime?
+  createdAt                DateTime                @default(now())
+  updatedAt                DateTime                @updatedAt
+  activityLogs             ActivityLog[]
+  inventories              BloodInventory[]
+  stockTransactions        BloodStockTransaction[]
+  incomingCouriers         CourierTelemetry[]
+  receivedDonations        DonationRecord[]        @relation("ReceivingOrg")
+  emergencyAlerts          EmergencyAlert[]
+  documents                OrganizationDocument[]
+  manager                  User?                   @relation("OrgManager", fields: [userId], references: [id])
+
+  @@map("organizations")
+}
+
+model OrganizationDocument {
+  id             String       @id @default(uuid())
+  organizationId String
+  documentType   String
+  fileName       String
+  fileUrl        String?
+  fileSize       Int?
+  mimeType       String?
+  uploadedAt     DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("organization_documents")
+}
+
+model BloodInventory {
+  id              String       @id @default(uuid())
+  organizationId  String
+  bloodGroup      BloodGroup
+  quantity        Int          @default(0)
+  lastUpdatedById String?
+  updatedAt       DateTime     @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, bloodGroup])
+  @@map("blood_inventories")
+}
+
+model BloodStockTransaction {
+  id               String       @id @default(uuid())
+  organizationId   String
+  bloodGroup       BloodGroup
+  delta            Int
+  previousQuantity Int
+  newQuantity      Int
+  reason           String?
+  performedById    String?
+  createdAt        DateTime     @default(now())
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  performedBy      User?        @relation(fields: [performedById], references: [id])
+
+  @@map("blood_stock_transactions")
+}
+
+model EmergencyAlert {
+  id              String                   @id @default(uuid())
+  createdById     String
+  organizationId  String?
+  bloodType       BloodGroup
+  urgency         UrgencyLevel             @default(HIGH)
+  category        EmergencyCategory        @default(TRAUMA)
+  hospitalName    String
+  department      String?
+  address         String
+  description     String
+  bagsNeeded      Int
+  bagsFulfilled   Int                      @default(0)
+  patientInitials String
+  patientAge      Int?
+  contactPhone    String
+  criticalNote    String?
+  status          EmergencyStatus          @default(ACTIVE)
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  createdBy       User                     @relation("AlertCreator", fields: [createdById], references: [id])
+  organization    Organization?            @relation(fields: [organizationId], references: [id])
+  responses       EmergencyDonorResponse[]
+
+  @@map("emergency_alerts")
+}
+
+model EmergencyDonorResponse {
+  id          String         @id @default(uuid())
+  alertId     String
+  donorUserId String
+  status      ResponseStatus @default(ACCEPTED)
+  etaMinutes  Int?
+  respondedAt DateTime       @default(now())
+  alert       EmergencyAlert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  donorUser   User           @relation(fields: [donorUserId], references: [id], onDelete: Cascade)
+
+  @@unique([alertId, donorUserId])
+  @@map("emergency_donor_responses")
+}
+
+model DonationRecord {
+  id               String       @id @default(uuid())
+  donorUserId      String
+  organizationId   String
+  bloodGroup       BloodGroup
+  unitsDonated     Int          @default(1)
+  donationType     DonationType @default(WHOLE_BLOOD)
+  certificateId    String       @unique
+  verificationHash String
+  livesImpacted    Int          @default(3)
+  donationDate     DateTime     @default(now())
+  createdAt        DateTime     @default(now())
+  donorUser        User         @relation("DonorUser", fields: [donorUserId], references: [id])
+  organization     Organization @relation("ReceivingOrg", fields: [organizationId], references: [id])
+
+  @@map("donation_records")
+}
+
+model Complaint {
+  id               String              @id @default(uuid())
+  reporterUserId   String
+  targetAccountId  String
+  targetType       ComplaintTargetType
+  reason           String
+  description      String
+  evidenceFileName String?
+  evidenceFileUrl  String?
+  status           ComplaintStatus     @default(OPEN)
+  actionTaken      String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  reporterUser     User                @relation("ReportedByUser", fields: [reporterUserId], references: [id])
+
+  @@map("complaints")
+}
+
+model CourierTelemetry {
+  id               String        @id @default(uuid())
+  vehicleId        String        @unique
+  destinationOrgId String
+  currentLat       Float
+  currentLng       Float
+  tempCelsius      Float
+  status           CourierStatus @default(IN_TRANSIT)
+  cargoDescription String
+  bloodUnits       Int           @default(0)
+  headingDeg       Int           @default(0)
+  etaMinutes       Int?
+  updatedAt        DateTime      @updatedAt
+  destinationOrg   Organization  @relation(fields: [destinationOrgId], references: [id])
+
+  @@map("couriers_telemetry")
+}
+
+model ActivityLog {
+  id             String           @id @default(uuid())
+  userId         String?
+  organizationId String?
+  category       ActivityCategory @default(SYSTEM)
+  severity       ActivitySeverity @default(INFO)
+  eventText      String
+  metadata       String?
+  createdAt      DateTime         @default(now())
+  organization   Organization?    @relation(fields: [organizationId], references: [id])
+  user           User?            @relation(fields: [userId], references: [id])
+
+  @@map("activity_logs")
+}
+
+model Notification {
+  id                String           @id @default(uuid())
+  recipientUserId   String
+  type              NotificationType @default(GENERAL)
+  title             String
+  message           String
+  relatedEntityId   String?
+  relatedEntityType String?
+  isRead            Boolean          @default(false)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @default(now()) @updatedAt
+  readAt            DateTime?
+  recipientUser     User             @relation("UserNotifications", fields: [recipientUserId], references: [id], onDelete: Cascade)
+
+  @@index([recipientUserId, isRead])
+  @@index([recipientUserId, createdAt])
+  @@map("notifications")
+}
+
+enum Role {
+  USER
+  HOSPITAL
+  BLOOD_BANK
+  SUPER_ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  PENDING
+  SUSPENDED
+  BANNED
+  REJECTED
+}
+
+enum BloodGroup {
+  A_POS  @map("A+")
+  A_NEG  @map("A-")
+  B_POS  @map("B+")
+  B_NEG  @map("B-")
+  AB_POS @map("AB+")
+  AB_NEG @map("AB-")
+  O_POS  @map("O+")
+  O_NEG  @map("O-")
+}
+
+enum OrganizationType {
+  HOSPITAL
+  BLOOD_BANK
+}
+
+enum OrganizationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+  BANNED
+}
+
+enum UrgencyLevel {
+  CODE_RED @map("Code Red: Urgent")
+  HIGH     @map("High")
+  MODERATE @map("Moderate")
+}
+
+enum EmergencyCategory {
+  TRAUMA            @map("Trauma")
+  PEDIATRIC_TRAUMA  @map("Pediatric Trauma")
+  PLATELET_ONCOLOGY @map("Platelet/Oncology")
+  POSTPARTUM        @map("Postpartum")
+  SURGICAL          @map("Surgical")
+}
+
+enum EmergencyStatus {
+  ACTIVE
+  FULFILLED
+  CANCELLED
+}
+
+enum ResponseStatus {
+  ACCEPTED
+  DECLINED
+  ARRIVED
+  COMPLETED
+}
+
+enum DonationType {
+  WHOLE_BLOOD @map("Whole Blood")
+  PLATELETS   @map("Platelets (Apheresis)")
+  PLASMA      @map("Plasma")
+}
+
+enum ComplaintStatus {
+  OPEN         @map("Open")
+  UNDER_REVIEW @map("Under Review")
+  RESOLVED     @map("Resolved")
+  REJECTED     @map("Rejected")
+}
+
+enum ComplaintTargetType {
+  USER
+  HOSPITAL
+  BLOOD_BANK
+}
+
+enum CourierStatus {
+  IN_TRANSIT @map("In Transit")
+  ARRIVED    @map("Arrived")
+  LOADING    @map("Loading")
+}
+
+enum ActivityCategory {
+  STOCK
+  EMERGENCY
+  LOGISTICS
+  DONOR
+  SYSTEM
+  AUTH
+}
+
+enum ActivitySeverity {
+  INFO
+  CRITICAL
+  SUCCESS
+  WARNING
+}
+
+enum NotificationType {
+  EMERGENCY_ALERT
+  DONOR_RESPONSE
+  EMERGENCY_FULFILLED
+  EMERGENCY_CANCELLED
+  DONOR_STATUS_UPDATE
+  ORGANIZATION_APPROVED
+  ORGANIZATION_REJECTED
+  ORGANIZATION_SUSPENDED
+  INVENTORY_LOW
+  GENERAL
+}
+

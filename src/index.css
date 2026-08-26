@@ -1,0 +1,983 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #080D18;
+  --bg-secondary: #0B1220;
+  --bg-card: #111827;
+  --bg-panel: #182235;
+  --border-primary: #263247;
+  --border-secondary: #1e293b;
+  --border-subtle: #1e293b;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-disabled: #64748B;
+  --brand-red: #F20A46;
+}
+
+html.light, body.light {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #F1F5F9;
+  --bg-card: #FFFFFF;
+  --bg-panel: #FFFFFF;
+  --border-primary: #E2E8F0;
+  --border-secondary: #CBD5E1;
+  --border-subtle: #CBD5E1;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-disabled: #94A3B8;
+  --brand-red: #F20A46;
+}
+
+@layer base {
+  body {
+    background-color: #080d18;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+
+  body.light {
+    background-color: #F8FAFC;
+    color: #0F172A;
+  }
+}
+
+/* ==========================================================================
+   LIGHT THEME SURFACE & CARD CONVERSIONS
+   ========================================================================== */
+
+/* Main page backgrounds */
+html.light body,
+html.light .min-h-screen {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+/* 1. Primary Page / Outer Containers (#080D18, #070B14 -> #F8FAFC) */
+html.light [class*="bg-[#080D18]"]:not(.tactical-radar-canvas):not([class*="aspect-"]),
+html.light [class*="bg-[#080d18]"]:not(.tactical-radar-canvas):not([class*="aspect-"]),
+html.light [class*="bg-[#070B14]"],
+html.light [class*="bg-[#070b14]"] {
+  background-color: #F8FAFC !important;
+}
+
+/* 2. Normal UI Cards & Modals (#111827 -> #FFFFFF) */
+html.light [class*="bg-[#111827]"]:not(.tactical-radar-canvas) {
+  background-color: #FFFFFF !important;
+}
+
+/* 3. Secondary Containers, Table Rows, Headers (#0B1220 -> #F1F5F9) */
+html.light [class*="bg-[#0B1220]"],
+html.light [class*="bg-[#0b1220]"],
+html.light [class*="bg-[#0d1424]"] {
+  background-color: #F1F5F9 !important;
+}
+
+/* 4. Tertiary Panels, Sub-bars, Interactive Items (#182235, #0F172A -> #F1F5F9) */
+html.light [class*="bg-[#182235]"]:not([class*="from-[#F20A46]"]):not([class*="btn-primary"]),
+html.light [class*="bg-[#0F172A]"]:not([class*="from-[#F20A46]"]),
+html.light [class*="bg-[#0f172a]"]:not([class*="from-[#F20A46]"]),
+html.light [class*="bg-[#151f33]"],
+html.light [class*="bg-[#1c273c]"],
+html.light [class*="bg-[#202e48]"],
+html.light [class*="bg-[#22304a]"] {
+  background-color: #F1F5F9 !important;
+}
+
+/* 5. Pill badges, light borders, subtle boxes (#1e293b -> #E2E8F0) */
+html.light [class*="bg-[#1e293b]"] {
+  background-color: #E2E8F0 !important;
+}
+
+/* 6. Standard Tailwind dark greys on normal UI */
+html.light [class*="bg-zinc-900"],
+html.light [class*="bg-zinc-800"],
+html.light [class*="bg-slate-900"],
+html.light [class*="bg-slate-800"],
+html.light [class*="bg-gray-900"],
+html.light [class*="bg-gray-800"] {
+  background-color: #F1F5F9 !important;
+}
+
+/* 7. Hover states on light mode */
+html.light [class*="hover:bg-[#151f33]"]:hover,
+html.light [class*="hover:bg-[#182235]"]:hover,
+html.light [class*="hover:bg-[#202e48]"]:hover,
+html.light [class*="hover:bg-[#22304a]"]:hover,
+html.light [class*="hover:bg-[#1c273c]"]:hover,
+html.light [class*="hover:bg-[#1e293b]"]:hover,
+html.light [class*="hover:bg-[#0B1220]"]:hover {
+  background-color: #E2E8F0 !important;
+}
+
+/* 8. Light Mode Borders */
+html.light [class*="border-[#263247]"],
+html.light [class*="border-[#1e293b]"],
+html.light [class*="border-[#334155]"],
+html.light [class*="border-[#3b4d6b]"],
+html.light [class*="border-zinc-800"],
+html.light [class*="border-zinc-700"],
+html.light [class*="border-slate-800"],
+html.light [class*="border-slate-700"] {
+  border-color: #E2E8F0 !important;
+}
+
+/* 9. Light Mode Dividers */
+html.light [class*="divide-[#263247]"] > :not([hidden]) ~ :not([hidden]),
+html.light [class*="divide-[#1e293b]"] > :not([hidden]) ~ :not([hidden]),
+html.light [class*="divide-[#334155]"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #E2E8F0 !important;
+}
+
+/* ==========================================================================
+   BLOOD GROUP BADGES & DARK GRADIENT CONVERSION (LIGHT THEME)
+   ========================================================================== */
+
+/* Dark slate/navy gradients used on normal icons/badges become clean light surfaces */
+html.light div[class*="from-[#1e293b] to-[#0f172a]"],
+html.light span[class*="from-[#1e293b] to-[#0f172a]"] {
+  background: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+/* Blood stock table group badge in Light Mode */
+html.light .blood-type-badge {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* ==========================================================================
+   LIGHT THEME TEXT HIERARCHY (AUTOMATIC CONVERSION)
+   ========================================================================== */
+
+/* 1. Primary Text (#0F172A): Headings, card titles, table headings, main metrics */
+html.light .text-white,
+html.light .text-\[\#F8FAFC\],
+html.light .text-\[\#f8fafc\],
+html.light .text-zinc-100,
+html.light .text-slate-100,
+html.light .text-gray-100 {
+  color: #0F172A !important;
+}
+
+/* 2. Secondary Text (#334155): Descriptions, supporting info, subtitles */
+html.light .text-zinc-200,
+html.light .text-zinc-300,
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-gray-200,
+html.light .text-gray-300 {
+  color: #334155 !important;
+}
+
+/* 3. Muted Text (#64748B): Timestamps, small labels, helper text */
+html.light .text-\[\#94A3B8\],
+html.light .text-\[\#94a3b8\],
+html.light .text-zinc-400,
+html.light .text-slate-400,
+html.light .text-gray-400 {
+  color: #64748B !important;
+}
+
+/* 4. Disabled Text (#94A3B8): Inactive elements, disabled buttons */
+html.light .text-zinc-500,
+html.light .text-slate-500,
+html.light .text-gray-500 {
+  color: #94A3B8 !important;
+}
+
+/* Icons on light backgrounds */
+html.light svg.text-zinc-400,
+html.light svg.text-zinc-300,
+html.light svg.text-slate-400,
+html.light svg.text-gray-400 {
+  color: #475569 !important;
+}
+
+/* ==========================================================================
+   EXEMPTIONS: PRESERVE CRISP WHITE TEXT ON COLORED / EMERGENCY CONTROLS
+   ========================================================================== */
+
+/* REDGRID Red Action Buttons & Gradients */
+html.light button.bg-\[\#F20A46\],
+html.light button.bg-\[\#F20A46\] *,
+html.light button[class*="from-\[\#F20A46\]"],
+html.light button[class*="from-\[\#F20A46\]"] *,
+html.light button[class*="to-\[\#E11D48\]"],
+html.light button[class*="to-\[\#E11D48\]"] *,
+html.light button[class*="to-\[\#9F1239\]"],
+html.light button[class*="to-\[\#9F1239\]"] *,
+html.light button.bg-rose-600,
+html.light button.bg-rose-600 *,
+html.light button.bg-rose-500,
+html.light button.bg-rose-500 *,
+html.light button.bg-red-600,
+html.light button.bg-red-600 *,
+html.light button.bg-indigo-600,
+html.light button.bg-indigo-600 *,
+html.light button.bg-emerald-600,
+html.light button.bg-emerald-600 *,
+html.light button.bg-blue-600,
+html.light button.bg-blue-600 *,
+html.light a.bg-\[\#F20A46\],
+html.light a.bg-\[\#F20A46\] *,
+html.light a[class*="from-\[\#F20A46\]"],
+html.light a[class*="from-\[\#F20A46\]"] *,
+html.light .btn-primary,
+html.light .btn-primary * {
+  color: #FFFFFF !important;
+}
+
+/* Active Navigation Tab (Red Background -> White Text) */
+html.light nav button.bg-\[\#F20A46\],
+html.light nav button.bg-\[\#F20A46\] *,
+html.light nav button.bg-\[\#F20A46\] svg {
+  color: #FFFFFF !important;
+  background-color: #F20A46 !important;
+}
+
+/* Inactive Navigation Buttons (Light Mode) */
+html.light nav button:not(.bg-\[\#F20A46\]) {
+  color: #334155 !important;
+}
+
+html.light nav button:not(.bg-\[\#F20A46\]):hover {
+  color: #0F172A !important;
+  background-color: #E2E8F0 !important;
+}
+
+html.light nav button:not(.bg-\[\#F20A46\]) svg {
+  color: #475569 !important;
+}
+
+/* Red Gradients & Emblems (Blood Groups, Chat Bubbles, Badges) */
+html.light .bg-\[\#F20A46\],
+html.light .bg-\[\#F20A46\] .text-white,
+html.light .bg-\[\#F20A46\] *,
+html.light div[class*="from-\[\#F20A46\] to-\[\#9F1239\]"],
+html.light div[class*="from-\[\#F20A46\] to-\[\#9F1239\]"] *,
+html.light div[class*="from-\[\#F20A46\] to-\[\#E11D48\]"],
+html.light div[class*="from-\[\#F20A46\] to-\[\#E11D48\]"] *,
+html.light .badge-white-text,
+html.light .badge-white-text *,
+html.light .keep-white-text,
+html.light .keep-white-text * {
+  color: #FFFFFF !important;
+}
+
+/* Modal Headers with Red Gradient */
+html.light div[class*="from-\[\#F20A46\]"] h3,
+html.light div[class*="from-\[\#F20A46\]"] p,
+html.light div[class*="from-\[\#F20A46\]"] span,
+html.light div[class*="from-\[\#F20A46\]"] svg {
+  color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   STATUS BADGES (HIGH CONTRAST IN BOTH THEMES)
+   ========================================================================== */
+
+/* Critical / Rejected / Banned / Emergency (Red) */
+html.light [class*="bg-rose-950"],
+html.light [class*="bg-red-950"] {
+  background-color: #FFE4E6 !important;
+  color: #BE123C !important;
+  border-color: #FDA4AF !important;
+}
+
+html.light [class*="bg-rose-950"] .text-rose-300,
+html.light [class*="bg-rose-950"] .text-rose-200,
+html.light [class*="bg-rose-950"] .text-rose-400,
+html.light [class*="bg-rose-950"] svg,
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #BE123C !important;
+}
+
+/* Available / Verified / Active (Green) */
+html.light [class*="bg-emerald-950"] {
+  background-color: #ECFDF5 !important;
+  color: #047857 !important;
+  border-color: #A7F3D0 !important;
+}
+
+html.light [class*="bg-emerald-950"] .text-emerald-300,
+html.light [class*="bg-emerald-950"] .text-emerald-400,
+html.light [class*="bg-emerald-950"] svg,
+html.light .text-emerald-300,
+html.light .text-emerald-400 {
+  color: #047857 !important;
+}
+
+/* Medium / Pending (Amber / Yellow) */
+html.light [class*="bg-amber-950"] {
+  background-color: #FEF3C7 !important;
+  color: #B45309 !important;
+  border-color: #FDE68A !important;
+}
+
+html.light [class*="bg-amber-950"] .text-amber-300,
+html.light [class*="bg-amber-950"] .text-amber-400,
+html.light [class*="bg-amber-950"] svg,
+html.light .text-amber-300,
+html.light .text-amber-400 {
+  color: #B45309 !important;
+}
+
+/* Low (Orange) */
+html.light [class*="bg-orange-950"] {
+  background-color: #FFF7ED !important;
+  color: #C2410C !important;
+  border-color: #FFEDD5 !important;
+}
+
+html.light [class*="bg-orange-950"] .text-orange-300,
+html.light [class*="bg-orange-950"] .text-orange-400,
+html.light [class*="bg-orange-950"] svg,
+html.light .text-orange-300,
+html.light .text-orange-400 {
+  color: #C2410C !important;
+}
+
+/* Admin / Info / Verification / Courier (Indigo) */
+html.light [class*="bg-indigo-950"] {
+  background-color: #EEF2FF !important;
+  color: #4338CA !important;
+  border-color: #C7D2FE !important;
+}
+
+html.light [class*="bg-indigo-950"] .text-indigo-300,
+html.light [class*="bg-indigo-950"] .text-indigo-400,
+html.light [class*="bg-indigo-950"] svg,
+html.light .text-indigo-300,
+html.light .text-indigo-400 {
+  color: #4338CA !important;
+}
+
+/* ==========================================================================
+   INPUTS, FORMS, SELECTS & PLACEHOLDERS (LIGHT MODE)
+   ========================================================================== */
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light select option {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #64748B !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #F20A46 !important;
+  outline: none;
+}
+
+/* Counter & stock adjustment buttons (+ / -) in Light Mode */
+html.light button.btn-counter,
+html.light [class*="btn-decrement-"],
+html.light [class*="btn-increment-"] {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* ==========================================================================
+   MODALS, OVERLAYS & CARDS (LIGHT MODE)
+   ========================================================================== */
+html.light .shadow-2xl,
+html.light .shadow-xl {
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .bg-black\/80,
+html.light .bg-black\/75,
+html.light .bg-black\/70,
+html.light .bg-black\/60 {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+}
+
+/* Secondary Cancel/Action Buttons in Modals */
+html.light button[class*="bg-[#182235]"]:not(.btn-primary):not([class*="from-[#F20A46]"]),
+html.light button[class*="bg-[#1e293b]"]:not(.btn-primary):not([class*="from-[#F20A46]"]) {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light button[class*="bg-[#182235]"]:not(.btn-primary):not([class*="from-[#F20A46]"]):hover,
+html.light button[class*="bg-[#1e293b]"]:not(.btn-primary):not([class*="from-[#F20A46]"]):hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* Dr. Clara Bot message bubble in Light Mode */
+html.light .bg-tactical-dots {
+  background-color: #F8FAFC !important;
+}
+
+/* Top Live Alerts Banner */
+html.light .bg-rose-950\/90.border-b.border-rose-800\/40,
+html.light [class*="bg-rose-950"][class*="border-rose-800"] {
+  background-color: #FFE4E6 !important;
+  border-color: #FDA4AF !important;
+  color: #9F1239 !important;
+}
+html.light .bg-rose-950\/90.border-b.border-rose-800\/40 span {
+  color: #9F1239 !important;
+}
+
+.font-logo {
+  font-family: 'Cabinet Grotesk', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.04em;
+}
+
+/* Radar Sweep Animation */
+@keyframes radar-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 6s linear infinite;
+  transform-origin: center center;
+}
+
+/* Tactical Pulse Animation */
+@keyframes tactical-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.15);
+  }
+}
+
+.animate-tactical-pulse {
+  animation: tactical-pulse 2.5s ease-in-out infinite;
+}
+
+/* Red Emergency Glow */
+.glow-emergency-red {
+  box-shadow: 0 0 20px -3px rgba(242, 10, 70, 0.45);
+}
+
+.glow-tactical-blue {
+  box-shadow: 0 0 20px -3px rgba(79, 70, 229, 0.35);
+}
+
+.glow-success-green {
+  box-shadow: 0 0 16px -3px rgba(16, 185, 129, 0.4);
+}
+
+/* Radar Grid Background Pattern */
+.bg-tactical-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(38, 50, 71, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(38, 50, 71, 0.3) 1px, transparent 1px);
+}
+
+html.light .bg-tactical-grid {
+  background-image: 
+    linear-gradient(to right, rgba(226, 232, 240, 0.8) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.8) 1px, transparent 1px);
+}
+
+.bg-tactical-dots {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+html.light .bg-tactical-dots {
+  background-image: radial-gradient(rgba(100, 116, 139, 0.25) 1px, transparent 0);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b1220;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+  border: 1px solid #263247;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-color: #E2E8F0;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* ==========================================================================
+   EMERGENCY ALERT BLOOD-GROUP BADGES (DARK BOX + WHITE TEXT IN BOTH THEMES)
+   ========================================================================== */
+.emergency-blood-badge,
+html.light .emergency-blood-badge,
+html.dark .emergency-blood-badge {
+  background: linear-gradient(135deg, #182235 0%, #0B1220 100%) !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid rgba(242, 10, 70, 0.45) !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3) !important;
+}
+
+.emergency-blood-badge.code-red,
+html.light .emergency-blood-badge.code-red,
+html.dark .emergency-blood-badge.code-red {
+  background: linear-gradient(135deg, #4C0519 0%, #1F0812 100%) !important;
+  border-color: rgba(242, 10, 70, 0.8) !important;
+  box-shadow: 0 4px 14px rgba(242, 10, 70, 0.35) !important;
+  color: #FFFFFF !important;
+}
+
+.emergency-blood-badge *,
+.emergency-blood-badge span,
+.emergency-blood-badge-text,
+html.light .emergency-blood-badge *,
+html.light .emergency-blood-badge span,
+html.light .emergency-blood-badge-text,
+html.dark .emergency-blood-badge *,
+html.dark .emergency-blood-badge span,
+html.dark .emergency-blood-badge-text {
+  color: #FFFFFF !important;
+  font-weight: 900 !important;
+}
+
+/* ==========================================================================
+   NOT AVAILABLE & ACTION BUTTONS
+   ========================================================================== */
+html.light .btn-not-available,
+html.light button.btn-not-available {
+  background-color: #FFFFFF !important;
+  color: #334155 !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light .btn-not-available:hover,
+html.light button.btn-not-available:hover {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+  border-color: #94A3B8 !important;
+}
+
+html.dark .btn-not-available,
+html.dark button.btn-not-available {
+  background-color: #0B1220 !important;
+  color: #94A3B8 !important;
+  border-color: #263247 !important;
+}
+
+html.dark .btn-not-available:hover,
+html.dark button.btn-not-available:hover {
+  background-color: #182235 !important;
+  color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   LIVE RADAR SCREEN THEME OVERRIDES
+   ========================================================================== */
+html.light .tactical-radar-canvas {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .tactical-radar-canvas .radar-distance-ring {
+  border-color: #CBD5E1 !important;
+}
+
+html.light .tactical-radar-canvas .radar-distance-ring span {
+  color: #64748B !important;
+}
+
+html.light .tactical-radar-canvas .radar-crosshair {
+  background-color: #CBD5E1 !important;
+  opacity: 0.8 !important;
+}
+
+html.light .tactical-radar-canvas .radar-header-pill {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #CBD5E1 !important;
+  color: #334155 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06) !important;
+}
+
+html.light .tactical-radar-canvas .radar-header-pill span {
+  color: #334155 !important;
+}
+
+html.light .radar-sweep-beam {
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 300deg, rgba(242, 10, 70, 0.15) 360deg) !important;
+}
+
+/* Radar Hospital Markers */
+html.light .radar-hospital-card {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1) !important;
+}
+
+html.light .radar-hospital-card .hospital-name {
+  color: #0F172A !important;
+}
+
+html.light .radar-hospital-card.emergency {
+  border-color: #F43F5E !important;
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.2) !important;
+}
+
+html.light .radar-hospital-card.selected {
+  border-color: #F20A46 !important;
+  box-shadow: 0 0 0 2px rgba(242, 10, 70, 0.35), 0 8px 16px rgba(15, 23, 42, 0.12) !important;
+}
+
+html.light .radar-hospital-icon-box:not(.emergency) {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light .radar-hospital-icon-box.emergency {
+  background: linear-gradient(135deg, #F20A46 0%, #9F1239 100%) !important;
+  color: #FFFFFF !important;
+}
+
+/* Radar Donor Markers (Green Circle + Crisp White Text in BOTH Themes) */
+.radar-donor-marker,
+html.light .radar-donor-marker,
+html.dark .radar-donor-marker {
+  background-color: #059669 !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid #34D399 !important;
+}
+
+.radar-donor-marker.selected,
+html.light .radar-donor-marker.selected,
+html.dark .radar-donor-marker.selected {
+  background-color: #047857 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #059669 !important;
+}
+
+.radar-donor-marker *,
+.radar-donor-marker span,
+html.light .radar-donor-marker *,
+html.light .radar-donor-marker span,
+html.dark .radar-donor-marker *,
+html.dark .radar-donor-marker span {
+  color: #FFFFFF !important;
+  font-weight: 900 !important;
+}
+
+/* Radar Courier Markers */
+html.light .radar-courier-marker {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #A5B4FC !important;
+  color: #3730A3 !important;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15) !important;
+}
+
+html.light .radar-courier-marker span {
+  color: #312E81 !important;
+}
+
+html.light .radar-courier-marker svg {
+  color: #4F46E5 !important;
+}
+
+html.light .radar-courier-marker.selected {
+  background-color: #4F46E5 !important;
+  color: #FFFFFF !important;
+  border-color: #FFFFFF !important;
+}
+
+html.light .radar-courier-marker.selected span,
+html.light .radar-courier-marker.selected svg {
+  color: #FFFFFF !important;
+}
+
+/* Radar Popups */
+html.light .radar-popup {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15) !important;
+}
+
+html.light .radar-popup .popup-title {
+  color: #0F172A !important;
+}
+
+html.light .radar-popup .popup-body,
+html.light .radar-popup p {
+  color: #475569 !important;
+}
+
+/* ==========================================================================
+   LOGIN PAGE BACKGROUND (REDGRID BACKGROUND) THEME ADAPTATION
+   ========================================================================== */
+
+/* Canvas Base */
+html.dark .redgrid-bg-canvas {
+  background-color: #070B14 !important;
+}
+
+html.light .redgrid-bg-canvas {
+  background-color: #F8FAFC !important;
+}
+
+/* Atmospheric Gradients */
+html.dark .redgrid-glow-upper {
+  background: radial-gradient(circle, rgba(242, 10, 70, 0.12) 0%, rgba(159, 18, 57, 0.05) 45%, transparent 70%) !important;
+}
+
+html.light .redgrid-glow-upper {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.16) 0%, rgba(251, 113, 133, 0.06) 45%, transparent 70%) !important;
+}
+
+html.dark .redgrid-glow-lower {
+  background: radial-gradient(circle, rgba(109, 40, 217, 0.09) 0%, rgba(49, 46, 129, 0.04) 50%, transparent 70%) !important;
+}
+
+html.light .redgrid-glow-lower {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.05) 50%, transparent 70%) !important;
+}
+
+html.dark .redgrid-glow-center {
+  background: radial-gradient(circle, rgba(242, 10, 70, 0.04) 0%, rgba(7, 11, 20, 0.8) 70%, transparent 100%) !important;
+}
+
+html.light .redgrid-glow-center {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.06) 0%, rgba(248, 250, 252, 0.8) 70%, transparent 100%) !important;
+}
+
+/* SVG Vector & Map Elements */
+html.dark .redgrid-bg-svg {
+  opacity: 0.09 !important;
+  color: #FFFFFF !important;
+}
+
+html.light .redgrid-bg-svg {
+  opacity: 0.42 !important;
+  color: #64748B !important;
+}
+
+html.dark .redgrid-svg-grid-line {
+  stroke: #263247 !important;
+  stroke-opacity: 0.45 !important;
+}
+
+html.light .redgrid-svg-grid-line {
+  stroke: #CBD5E1 !important;
+  stroke-opacity: 0.75 !important;
+}
+
+html.dark .redgrid-svg-grid-dot {
+  fill: #F20A46 !important;
+  fill-opacity: 0.6 !important;
+}
+
+html.light .redgrid-svg-grid-dot {
+  fill: #F43F5E !important;
+  fill-opacity: 0.55 !important;
+}
+
+html.dark .redgrid-svg-arc-muted {
+  stroke: #94A3B8 !important;
+  stroke-opacity: 0.45 !important;
+}
+
+html.light .redgrid-svg-arc-muted {
+  stroke: #64748B !important;
+  stroke-opacity: 0.6 !important;
+}
+
+html.dark .redgrid-svg-coastline {
+  stroke: #38BDF8 !important;
+  stroke-opacity: 0.35 !important;
+}
+
+html.light .redgrid-svg-coastline {
+  stroke: #0284C7 !important;
+  stroke-opacity: 0.55 !important;
+}
+
+html.dark .redgrid-svg-axis {
+  stroke: #263247 !important;
+  stroke-opacity: 0.6 !important;
+}
+
+html.light .redgrid-svg-axis {
+  stroke: #CBD5E1 !important;
+  stroke-opacity: 0.8 !important;
+}
+
+html.dark .redgrid-svg-circle {
+  stroke: #263247 !important;
+  stroke-opacity: 0.5 !important;
+}
+
+html.light .redgrid-svg-circle {
+  stroke: #94A3B8 !important;
+  stroke-opacity: 0.5 !important;
+}
+
+/* Background Circular Nodes & Dots */
+html.dark .redgrid-node-pink {
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  background-color: rgba(244, 63, 94, 0.06);
+  box-shadow: 0 0 12px rgba(242, 10, 70, 0.15);
+}
+
+html.light .redgrid-node-pink {
+  border: 1.5px solid rgba(244, 63, 94, 0.45);
+  background-color: rgba(244, 63, 94, 0.12);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.20);
+}
+
+html.dark .redgrid-node-purple {
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  background-color: rgba(99, 102, 241, 0.05);
+}
+
+html.light .redgrid-node-purple {
+  border: 1.5px solid rgba(99, 102, 241, 0.45);
+  background-color: rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.18);
+}
+
+html.dark .redgrid-dot-core {
+  background-color: rgba(251, 113, 133, 0.5);
+}
+
+html.light .redgrid-dot-core {
+  background-color: rgba(244, 63, 94, 0.65);
+}
+
+html.dark .redgrid-dot-ring {
+  border: 1px solid rgba(251, 113, 133, 0.4);
+  background-color: rgba(251, 113, 133, 0.2);
+}
+
+html.light .redgrid-dot-ring {
+  border: 1.5px solid rgba(244, 63, 94, 0.55);
+  background-color: rgba(244, 63, 94, 0.25);
+}
+
+html.dark .redgrid-dot-solid {
+  background-color: rgba(251, 113, 133, 0.4);
+}
+
+html.light .redgrid-dot-solid {
+  background-color: rgba(244, 63, 94, 0.45);
+}
+
+html.dark .redgrid-purple-core {
+  background-color: rgba(168, 85, 247, 0.4);
+}
+
+html.light .redgrid-purple-core {
+  background-color: rgba(99, 102, 241, 0.6);
+}
+
+/* Background Human Connection Language (Step 01 - 04) */
+html.dark .redgrid-connection-item {
+  opacity: 0.14 !important;
+}
+
+html.light .redgrid-connection-item {
+  opacity: 0.82 !important;
+}
+
+html.dark .redgrid-connection-icon-box {
+  background-color: #0F172A !important;
+  border-color: rgba(244, 63, 94, 0.4) !important;
+}
+
+html.light .redgrid-connection-icon-box {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Background Mission Statement Typography */
+html.dark .redgrid-mission-title {
+  color: rgba(255, 255, 255, 0.09) !important;
+}
+
+html.light .redgrid-mission-title {
+  color: #475569 !important;
+  opacity: 0.65 !important;
+}
+
+html.dark .redgrid-mission-subtitle {
+  color: rgba(148, 163, 184, 0.08) !important;
+}
+
+html.light .redgrid-mission-subtitle {
+  color: #64748B !important;
+  opacity: 0.75 !important;
+}
+
+/* Background Decorative System Text & Crosshairs */
+html.dark .redgrid-bg-text-secondary {
+  color: rgba(244, 63, 94, 0.35) !important;
+}
+
+html.light .redgrid-bg-text-secondary {
+  color: #475569 !important;
+  opacity: 0.85 !important;
+}
+
+html.dark .redgrid-bg-text-subtle {
+  color: rgba(148, 163, 184, 0.22) !important;
+}
+
+html.light .redgrid-bg-text-subtle {
+  color: #64748B !important;
+  opacity: 0.75 !important;
+}
+
+html.dark .redgrid-bg-crosshair {
+  color: rgba(148, 163, 184, 0.25) !important;
+}
+
+html.light .redgrid-bg-crosshair {
+  color: #94A3B8 !important;
+  opacity: 0.8 !important;
+}
+
+

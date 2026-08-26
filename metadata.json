@@ -1,0 +1,6 @@
+{
+  "name": "RedGrid",
+  "description": "Real-time blood donation coordination platform connecting donors, hospitals, and patients with live emergency alerts and readiness tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
